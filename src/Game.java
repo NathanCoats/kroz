@@ -21,7 +21,7 @@ public class Game {
 			String command = in.nextLine();
 
 			if( command.equals("quit") ) {
-				quitProcess( player );
+				quit = quitProcess( player );
 			}
 			else if( command.equals("save game") ) {
 				saveProcess( player );
@@ -60,7 +60,6 @@ public class Game {
 			if( quit_sequence.charAt(0) == 'y' || quit_sequence.charAt(0) == 'Y') {
 				quit = true;
 				System.out.println("Would you like to save y/n ?");
-				in = new Scanner( System.in );
 				String save_sequence = in.nextLine();
 				try {				
 					if( save_sequence.charAt(0) == 'y' || save_sequence.charAt(0) == 'Y') {
@@ -72,6 +71,7 @@ public class Game {
 			}
 		}
 		catch(Exception e) {}
+		in.close();
 		return quit;
 	}
 	
