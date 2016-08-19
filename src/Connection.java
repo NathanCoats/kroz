@@ -16,7 +16,7 @@ public class Connection {
 	  public String[] hosts = { "127.0.0.1" } ;
 	  public String port = "";
 	  public String table = "";
-
+	
 	  // Mongo variables
 	  public MongoClient mongo_client = null;
 	  public DB db = null;
@@ -54,7 +54,7 @@ public class Connection {
 	  }
 	  
 	  // UTILITY METHODS
-
+	
 	  // simply gets back a list of ServerAddress to create a new mongo connection, this is obtained from the hosts array
 	  public List<ServerAddress> getServerList() {
 	    List<ServerAddress> servers = new ArrayList<ServerAddress>();
@@ -68,36 +68,36 @@ public class Connection {
 	    }
 	    return servers;
 	  }
-
+	
 		/**
-		* Returns value of host
-		* @return
-		*/
-		public String getHostString() {
-	    String host_string = "";
-	    for(int i = 0; i < hosts.length; i++) {
-	      host_string += hosts[i]+",";
-	    }
-	    // this is just a quick method to remove the trailing comma
-	    return host_string.substring( 0, host_string.length() - 1 );
-		}
-
-		/**
-		* Returns value of database
-		* @return
-		*/
-		public String getDatabase() {
-			return database;
-		}
-
-		/**
-		* Sets new value of database
-		* @param
-		*/
+	* Returns value of host
+	* @return
+	*/
+	public String getHostString() {
+	String host_string = "";
+	for(int i = 0; i < hosts.length; i++) {
+	  host_string += hosts[i]+",";
+	}
+	// this is just a quick method to remove the trailing comma
+	return host_string.substring( 0, host_string.length() - 1 );
+	}
+	
+	/**
+	* Returns value of database
+	* @return
+	*/
+	public String getDatabase() {
+		return database;
+	}
+	
+	/**
+	* Sets new value of database
+	* @param
+	*/
 		public void setDatabase(String database) {
 			this.database = database;
 		}
-
+	
 	  /**
 	  * Returns value of hosts
 	  * @return
@@ -105,7 +105,7 @@ public class Connection {
 	  public String[] getHosts() {
 	    return hosts;
 	  }
-
+	
 	  /**
 	  * Sets new value of hosts
 	  * @param
@@ -115,69 +115,69 @@ public class Connection {
 	    this.hosts = hosts;
 	  }
 
-		/**
-		* Returns value of username
-		* @return
-		*/
-		public String getUsername() {
-			return username;
-		}
-
-		/**
-		* Sets new value of username
-		* @param
-		*/
-		public void setUsername(String username) {
-			this.username = username;
-		}
-
-		/**
-		* Returns value of password
-		* @return
-		*/
-		public String getPassword() {
-			return password;
-		}
-
-		/**
-		* Sets new value of password
-		* @param
-		*/
-		public void setPassword(String password) {
-			this.password = password;
-		}
-
-		/**
-		* Returns value of port
-		* @return
-		*/
-		public String getPort() {
-			return port;
-		}
-
-		/**
-		* Sets new value of port
-		* @param
-		*/
-		public void setPort(String port) {
-			this.port = port;
-		}
-
-		/**
-		* Returns value of table
-		* @return
-		*/
-		public String getTable() {
-			return table;
-		}
-
-		/**
-		* Sets new value of table
-		* @param
-		*/
-		public void setTable(String table) {
-			this.table = table;
-		}
+	/**
+	* Returns value of username
+	* @return
+	*/
+	public String getUsername() {
+		return username;
+	}
+	
+	/**
+	* Sets new value of username
+	* @param
+	*/
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	/**
+	* Returns value of password
+	* @return
+	*/
+	public String getPassword() {
+		return password;
+	}
+	
+	/**
+	* Sets new value of password
+	* @param
+	*/
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	/**
+	* Returns value of port
+	* @return
+	*/
+	public String getPort() {
+		return port;
+	}
+	
+	/**
+	* Sets new value of port
+	* @param
+	*/
+	public void setPort(String port) {
+		this.port = port;
+	}
+	
+	/**
+	* Returns value of table
+	* @return
+	*/
+	public String getTable() {
+		return table;
+	}
+	
+	/**
+	* Sets new value of table
+	* @param
+	*/
+	public void setTable(String table) {
+		this.table = table;
+	}
 
 	
 }
