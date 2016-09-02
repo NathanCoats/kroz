@@ -1,0 +1,10 @@
+{ 
+    "_id" : ObjectId("57c9968c747d6224e024cfd3"), 
+    "name" : "leaflet", 
+    "title" : "A Leaflet", 
+    "description" : "this is what is says", 
+    "attack" : NumberInt(0), 
+    "can_eat" : false, 
+    "hp" : NumberInt(0), 
+    "can_take" : true
+}

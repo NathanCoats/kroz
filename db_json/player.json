@@ -1,0 +1,14 @@
+{ 
+    "_id" : ObjectId("57b773917c52531b49b91fb5"), 
+    "name" : "gason", 
+    "level" : NumberInt(1), 
+    "hp" : NumberInt(10), 
+    "attack" : NumberInt(5), 
+    "defense" : NumberInt(5), 
+    "xp" : NumberInt(0), 
+    "x" : NumberInt(1), 
+    "y" : NumberInt(1), 
+    "items" : [
+        "abc"
+    ]
+}

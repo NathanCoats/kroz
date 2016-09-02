@@ -30,10 +30,8 @@ public class Game {
 				printStats(player);
 			}
 			
-			Command c = Command.handleCommand( command );			
-			System.out.println( c.getCommand() );
+			player.handleCommand( command );			
 		}
-		
 		
 		in.close();
 	}

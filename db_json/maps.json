@@ -1,0 +1,15 @@
+{ 
+    "_id" : ObjectId("57c9916b747d6224e024cfd1"), 
+    "x" : NumberInt(1), 
+    "y" : NumberInt(1), 
+    "description" : "This is a description of layout number 1", 
+    "items" : [
+        "leaflet"
+    ], 
+    "paths" : [
+        {
+            "x" : NumberInt(1), 
+            "y" : NumberInt(2)
+        }
+    ]
+}

@@ -1,0 +1,125 @@
+{ 
+    "_id" : ObjectId("57c98aa7747d6224e024cfad"), 
+    "name" : "take", 
+    "aliases" : [
+        "pick", 
+        "get"
+    ], 
+    "type" : "obtain"
+}
+{ 
+    "_id" : ObjectId("57c98bd5747d6224e024cfaf"), 
+    "name" : "drop", 
+    "aliases" : [
+
+    ], 
+    "type" : "drop"
+}
+{ 
+    "_id" : ObjectId("57c98c2e747d6224e024cfb1"), 
+    "name" : "examine", 
+    "aliases" : [
+
+    ], 
+    "type" : "describe"
+}
+{ 
+    "_id" : ObjectId("57c98cd8747d6224e024cfb3"), 
+    "name" : "attack", 
+    "aliases" : [
+
+    ], 
+    "type" : "attack"
+}
+{ 
+    "_id" : ObjectId("57c98ce3747d6224e024cfb5"), 
+    "name" : "climb", 
+    "aliases" : [
+
+    ], 
+    "type" : "move"
+}
+{ 
+    "_id" : ObjectId("57c98cf8747d6224e024cfb7"), 
+    "name" : "open", 
+    "aliases" : [
+
+    ], 
+    "type" : "modify"
+}
+{ 
+    "_id" : ObjectId("57c98d06747d6224e024cfb9"), 
+    "name" : "close", 
+    "aliases" : [
+
+    ], 
+    "type" : "modify"
+}
+{ 
+    "_id" : ObjectId("57c98d49747d6224e024cfbb"), 
+    "name" : "count", 
+    "aliases" : [
+
+    ], 
+    "type" : "describe"
+}
+{ 
+    "_id" : ObjectId("57c98d88747d6224e024cfbd"), 
+    "name" : "diagnose", 
+    "aliases" : [
+
+    ], 
+    "type" : "player"
+}
+{ 
+    "_id" : ObjectId("57c98d99747d6224e024cfbf"), 
+    "name" : "inventory", 
+    "aliases" : [
+
+    ], 
+    "type" : "player"
+}
+{ 
+    "_id" : ObjectId("57c98da7747d6224e024cfc1"), 
+    "name" : "describe", 
+    "aliases" : [
+
+    ], 
+    "type" : "describe"
+}
+{ 
+    "_id" : ObjectId("57c98f52747d6224e024cfc3"), 
+    "name" : "throw", 
+    "aliases" : [
+
+    ], 
+    "type" : ""
+}
+{ 
+    "_id" : ObjectId("57c98fb0747d6224e024cfc5"), 
+    "name" : "turn", 
+    "aliases" : [
+
+    ], 
+    "type" : "modify"
+}
+{ 
+    "_id" : ObjectId("57c98fd1747d6224e024cfc7"), 
+    "name" : "move", 
+    "aliases" : [
+
+    ], 
+    "type" : "modify"
+}
+{ 
+    "_id" : ObjectId("57c990e1747d6224e024cfcf"), 
+    "name" : "stats", 
+    "aliases" : [
+        "hp", 
+        "health", 
+        "xp", 
+        "experience", 
+        "player"
+    ], 
+    "type" : "player"
+}

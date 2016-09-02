@@ -34,8 +34,8 @@ public class Player {
 	    		this.defense = 5;
 	    		this.level = 1;
 	    		this.xp = 0;
-	    		this.x  = 0;
-	    		this.y  = 0;
+	    		this.x  = 1;
+	    		this.y  = 1;
 	    		this.items = new ArrayList<Item>();
 	        }
 	        else {
@@ -76,12 +76,12 @@ public class Player {
 	    	connection.getCollection( "player" ).insert( obj );
 	    }
 	    else {
-		    BasicDBObject obj = new BasicDBObject("hp",this.hp)
+		    BasicDBObject obj = new BasicDBObject("name",this.name)
+		    	.append("level", this.level)
+		    	.append("hp", this.hp)
 			    .append("attack", this.attack)
 			    .append("defense", this.defense)
 			    .append("xp", this.xp)
-			    .append("level", this.level)
-			    .append("name", this.name)
 			    .append("x", this.x)
 			    .append("y", this.y)
 		    	.append("items", this.items);
@@ -90,6 +90,63 @@ public class Player {
 	    	connection.getCollection( "player" ).update(search, obj, true, false);
 	    }
 	    
+	}
+	
+	public void levelUp() {
+		this.setLevel(level + 1);
+		this.setXp(0);
+		this.setAttack(attack + 1);
+		this.setDefense(defense + 1);
+		this.setHp(hp + 2);
+	}
+	
+	public void handleCommand(String text) {
+		try {
+			System.out.println(text);
+		
+			String[] hosts = { "127.0.0.1" };
+			Connection connection = new Connection(hosts, "27017", "zork", "", "");
+			String[] parameters = text.split(" ");
+			
+			DBCursor cursor = connection.getCollection("player").find( new BasicDBObject("name",parameters[0].toLowerCase()) ).limit(1);
+			if( cursor.size() > 0 ) {	
+				DBObject next = cursor.next();
+				System.out.println( next.get("") );
+			}
+			//else throw new Exception();
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			//System.out.println("Sorry Command Not Valid");
+		}
+		
+	}
+	
+	public void getInventory() {
+		for(Item item : this.items) {
+			System.out.println( item.getTitle() );
+		}
+	}
+	
+	public void getPosition() {
+		System.out.println(x + " " + y);
+	}
+	
+	public void goUp() {
+		this.setY( y + 1);
+	}
+	
+	public void goDown() {
+		this.setY( y - 1);
+	}
+	
+	public void goRight() {
+		this.setY( x + 1);
+	}
+	
+	public void goLeft() {
+		this.setY( x - 1);
 	}
 	
 	public void movePlayer(int x, int y) {
