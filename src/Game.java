@@ -1,6 +1,10 @@
 
 import java.util.Scanner;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+
 public class Game {
 	
 	public static void main( String[] args) {
@@ -29,6 +33,9 @@ public class Game {
 			else if( command.equals("stats") ) {
 				printStats(player);
 			}
+			else if( command.equals("commands") ) {
+				printCommands();
+			}
 			
 			player.handleCommand( command );			
 		}
@@ -42,6 +49,26 @@ public class Game {
 		System.out.println("Defense: " + player.getDefense() );
 		System.out.println("Level: " + player.getLevel() );
 		System.out.println("XP: " + player.getXp() );
+	}
+	
+	public static void printCommands() {
+		String[] hosts = { "127.0.0.1" };
+		Connection connection = new Connection(hosts, "27017", "zork", "", "");
+		DBCursor cursor = connection.getCollection("command").find();
+		if( cursor.size() > 0) {
+			while( cursor.hasNext() ) {
+				BasicDBObject next = (BasicDBObject)cursor.next();
+				System.out.println( next.get("name").toString() );
+				for(String command : next.get("aliases").toString().split(",") ) {
+					command = command.replace("[", "").replace("]", "").replaceAll(" ", "").replaceAll("\"", "");
+					if( !command.equals("") ) {
+						System.out.println(command);
+					}
+				}
+				
+				
+			}
+		}
 	}
 	
 	public static void saveProcess( Player player ) {

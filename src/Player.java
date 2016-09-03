@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -36,6 +37,8 @@ public class Player {
 	    		this.xp = 0;
 	    		this.x  = 1;
 	    		this.y  = 1;
+	    		
+	    		// this is a temporary placeholder until we get a working system for items
 	    		this.items = new ArrayList<Item>();
 	        }
 	        else {
@@ -49,6 +52,8 @@ public class Player {
 	        	this.attack = Integer.parseInt( next.get("attack").toString() );
 	        	this.defense = Integer.parseInt( next.get("defense").toString() );
 	        	this.xp = Integer.parseInt( next.get("xp").toString() );
+
+	        	// this is a temporary placeholder until we get a working system for items
 	        	this.items = (ArrayList<Item>)next.get("items");
 	        	
 	        }
@@ -71,6 +76,8 @@ public class Player {
 		    	.append("name", this.name)
 		    	.append("x", this.x)
 		    	.append("y", this.y)
+		    	
+		    	// this is a temporary placeholder until we get a working system for items
 		    	.append("items", this.items);
 		    
 	    	connection.getCollection( "player" ).insert( obj );
@@ -84,6 +91,8 @@ public class Player {
 			    .append("xp", this.xp)
 			    .append("x", this.x)
 			    .append("y", this.y)
+			    
+			    // this is a temporary placeholder until we get a working system for items
 		    	.append("items", this.items);
 		    
 	    	BasicDBObject search = new BasicDBObject("name", this.name);
@@ -102,25 +111,98 @@ public class Player {
 	
 	public void handleCommand(String text) {
 		try {
-			System.out.println(text);
-		
+
 			String[] hosts = { "127.0.0.1" };
 			Connection connection = new Connection(hosts, "27017", "zork", "", "");
 			String[] parameters = text.split(" ");
+			String base_command = parameters[0].toLowerCase();
 			
-			DBCursor cursor = connection.getCollection("player").find( new BasicDBObject("name",parameters[0].toLowerCase()) ).limit(1);
-			if( cursor.size() > 0 ) {	
+			BasicDBList or = new BasicDBList();
+			or.add( new BasicDBObject( "name", base_command ) );
+			or.add( new BasicDBObject( "aliases", base_command ) );
+			
+			DBCursor cursor = connection.getCollection("command").find( new BasicDBObject("$or", or) ).limit(1);
+
+			if( cursor.size() > 0 ) {
+				
+				Map map = new Map(this.x, this.y);
 				DBObject next = cursor.next();
-				System.out.println( next.get("") );
+				
+				String type = next.get("type").toString();
+				if(type.equals("move")) {
+					try {
+						// handle move
+					}
+					catch(IndexOutOfBoundsException e) {
+						System.out.println( base_command + " where?" );
+					}
+				}
+				else if(type.equals("obtain")) {
+					try {
+						//handle obtain
+					}
+					catch(IndexOutOfBoundsException e) {
+						System.out.println( base_command + " what?" );
+					}	
+				}
+				else if(type.equals("drop")) {
+					try {
+						// handle drop
+					}
+					catch(IndexOutOfBoundsException e) {
+						System.out.println( base_command + " what?" );
+					}	
+				}
+				else if(type.equals("describe")) {
+					handleDescribe(base_command, parameters);
+				}
+				else if(type.equals("attack")) {
+					
+				}
+				else if(type.equals("modify")) {
+					
+				}
+				else if(type.equals("player")) {
+					
+				}
+				else if(type.equals("map")) {
+					System.out.println( map.getDescription() );
+				}
 			}
-			//else throw new Exception();
+			else throw new Exception("Invalid command");
 			
 		}
 		catch(Exception e) {
-			e.printStackTrace();
+			System.out.println( e.getMessage() );
 			//System.out.println("Sorry Command Not Valid");
 		}
 		
+	}
+	
+	public void handleMove(String base_command, String[] parameters) {
+		
+	}
+	
+	public void handleDescribe(String base_command, String[] parameters) {
+		String[] hosts = { "127.0.0.1" };
+		try {
+			Connection connection = new Connection(hosts, "27017", "zork", "", "");
+			DBCursor cursor = connection.getCollection("item")
+					.find(new BasicDBObject("title", new BasicDBObject("$regex" , parameters[1] ).append("$options","i")) )
+					.limit(1);
+		
+			if(cursor.size() == 0) {
+				System.out.println("Nothing found with that name.");
+			}
+			else {
+				BasicDBObject next = (BasicDBObject)cursor.next();
+				System.out.println( next.get("title").toString() );
+				System.out.println( next.get("description").toString() );
+			}
+		}
+		catch(IndexOutOfBoundsException e) {
+			System.out.println( base_command + " what?" );
+		}			
 	}
 	
 	public void getInventory() {
