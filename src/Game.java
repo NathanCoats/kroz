@@ -52,8 +52,7 @@ public class Game {
 	}
 	
 	public static void printCommands() {
-		String[] hosts = { "127.0.0.1" };
-		Connection connection = new Connection(hosts, "27017", "zork", "", "");
+		Connection connection = new Connection();
 		DBCursor cursor = connection.getCollection("command").find();
 		if( cursor.size() > 0) {
 			while( cursor.hasNext() ) {

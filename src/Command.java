@@ -17,9 +17,8 @@ public class Command {
 //	}
 
 	public Command loadCommand(String text) {
-		
-		String[] hosts = { "127.0.0.1" };
-		Connection connection = new Connection(hosts, "27017", "zork", "", "");
+
+		Connection connection = new Connection();
 		String[] parameters = text.split(" ");
 		
 		DBCursor cursor = connection.getCollection("player").find( new BasicDBObject("name",parameters[0].toLowerCase()) ).limit(1);

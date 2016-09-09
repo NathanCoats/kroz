@@ -23,8 +23,7 @@ public class Player {
 	public Player( String name ) {
 		try {
 			
-			String[] hosts = { "127.0.0.1" };
-			Connection connection = new Connection(hosts, "27017", "zork", "", "");
+			Connection connection = new Connection();
 			DBCursor cursor = connection.getCollection("player").find( new BasicDBObject("name", name) ).limit(1);
 	        if(cursor.size() == 0) {
 	    		this.id = "";
@@ -64,8 +63,7 @@ public class Player {
 	}
 	
 	public void save() {
-		String[] hosts = { "127.0.0.1" };
-	    Connection connection = new Connection(hosts, "27017", "zork", "", "");
+	    Connection connection = new Connection();
 
 	    if( this.id.equals("") ) {
 		    BasicDBObject obj = new BasicDBObject("hp",this.hp)
@@ -112,8 +110,7 @@ public class Player {
 	public void handleCommand(String text) {
 		try {
 
-			String[] hosts = { "127.0.0.1" };
-			Connection connection = new Connection(hosts, "27017", "zork", "", "");
+			Connection connection = new Connection();
 			String[] parameters = text.split(" ");
 			String base_command = parameters[0].toLowerCase();
 			
@@ -184,9 +181,8 @@ public class Player {
 	}
 	
 	public void handleDescribe(String base_command, String[] parameters) {
-		String[] hosts = { "127.0.0.1" };
 		try {
-			Connection connection = new Connection(hosts, "27017", "zork", "", "");
+			Connection connection = new Connection();
 			DBCursor cursor = connection.getCollection("item")
 					.find(new BasicDBObject("title", new BasicDBObject("$regex" , parameters[1] ).append("$options","i")) )
 					.limit(1);

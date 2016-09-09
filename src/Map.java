@@ -16,9 +16,7 @@ public class Map {
 	
 	public Map( Integer x, Integer y ) {
 		try {
-			
-			String[] hosts = { "127.0.0.1" };
-			Connection connection = new Connection(hosts, "27017", "zork", "", "");
+			Connection connection = new Connection();
 
 			BasicDBList and = new BasicDBList();
 			and.add( new BasicDBObject( "x", x ) );
@@ -57,8 +55,7 @@ public class Map {
 	}
 	
 	public void save() {
-		String[] hosts = { "127.0.0.1" };
-	    Connection connection = new Connection(hosts, "27017", "zork", "", "");
+	    Connection connection = new Connection();
 
 	    if( this.id.equals("") ) {
 		    BasicDBObject obj = new BasicDBObject("desciption",this.description)

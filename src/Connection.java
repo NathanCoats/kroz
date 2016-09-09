@@ -10,10 +10,10 @@ import com.mongodb.ServerAddress;
 
 public class Connection {
 	
-	  public String database = "" ;
+	  public String database = "kroz" ;
 	  public String username = "" ;
 	  public String password = "";
-	  public String[] hosts = { "127.0.0.1" } ;
+	  public String[] hosts = { "104.236.192.26" } ;
 	  public String port = "";
 	  public String table = "";
 	
@@ -24,12 +24,13 @@ public class Connection {
 	  public DBCursor cursor  = null;
 	  public DBObject current = null;
 	  
-	  public Connection(String[] hosts, String port, String database, String username, String password) {
-		    setHosts(hosts);
-		    setPort(port);
-		    setDatabase(database);
-		    setUsername(username);
-		    setPassword(password);
+	  public Connection() {
+		  
+//		    setHosts(hosts);
+//		    setPort(port);
+//		    setDatabase(database);
+//		    setUsername(username);
+//		    setPassword(password);
 	  }
 	  
 	  // returns the current collection.
