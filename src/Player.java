@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -14,14 +16,17 @@ public class Player {
 	public int defense;
 	public int level;
 	public int xp;
+	public Map map;
 	
 	public int x;
 	public int y;
 	
-	public ArrayList<Item> items;
+	public HashMap<String, Item> items;
 	
 	public Player( String name ) {
 		try {
+			
+			this.items = new HashMap<String, Item>();
 			
 			Connection connection = new Connection();
 			DBCursor cursor = connection.getCollection("player").find( new BasicDBObject("name", name) ).limit(1);
@@ -34,11 +39,10 @@ public class Player {
 	    		this.defense = 5;
 	    		this.level = 1;
 	    		this.xp = 0;
-	    		this.x  = 1;
-	    		this.y  = 1;
+	    		this.x  = 0;
+	    		this.y  = 0;
+	    		this.map = new Map(this.x, this.y);
 	    		
-	    		// this is a temporary placeholder until we get a working system for items
-	    		this.items = new ArrayList<Item>();
 	        }
 	        else {
 	        	DBObject next = cursor.next();
@@ -51,9 +55,10 @@ public class Player {
 	        	this.attack = Integer.parseInt( next.get("attack").toString() );
 	        	this.defense = Integer.parseInt( next.get("defense").toString() );
 	        	this.xp = Integer.parseInt( next.get("xp").toString() );
+	        	this.map = new Map(this.x, this.y);
 
 	        	// this is a temporary placeholder until we get a working system for items
-	        	this.items = (ArrayList<Item>)next.get("items");
+	        	this.items = Item.convertItems((ArrayList<String>)next.get("items"));
 	        	
 	        }
 		}
@@ -76,7 +81,8 @@ public class Player {
 		    	.append("y", this.y)
 		    	
 		    	// this is a temporary placeholder until we get a working system for items
-		    	.append("items", this.items);
+		    	
+		    	.append("items", Item.unConvertItems(this.items) );
 		    
 	    	connection.getCollection( "player" ).insert( obj );
 	    }
@@ -91,7 +97,7 @@ public class Player {
 			    .append("y", this.y)
 			    
 			    // this is a temporary placeholder until we get a working system for items
-		    	.append("items", this.items);
+		    	.append("items", Item.unConvertItems(this.items) );
 		    
 	    	BasicDBObject search = new BasicDBObject("name", this.name);
 	    	connection.getCollection( "player" ).update(search, obj, true, false);
@@ -119,36 +125,21 @@ public class Player {
 			or.add( new BasicDBObject( "aliases", base_command ) );
 			
 			DBCursor cursor = connection.getCollection("command").find( new BasicDBObject("$or", or) ).limit(1);
-
 			if( cursor.size() > 0 ) {
 				
 				Map map = new Map(this.x, this.y);
 				DBObject next = cursor.next();
 				
 				String type = next.get("type").toString();
+
 				if(type.equals("move")) {
-					try {
-						// handle move
-					}
-					catch(IndexOutOfBoundsException e) {
-						System.out.println( base_command + " where?" );
-					}
+					handleMove(parameters);
 				}
 				else if(type.equals("obtain")) {
-					try {
-						//handle obtain
-					}
-					catch(IndexOutOfBoundsException e) {
-						System.out.println( base_command + " what?" );
-					}	
+					handleObtain(parameters);
 				}
 				else if(type.equals("drop")) {
-					try {
-						// handle drop
-					}
-					catch(IndexOutOfBoundsException e) {
-						System.out.println( base_command + " what?" );
-					}	
+					//handleDrop(parameters);
 				}
 				else if(type.equals("describe")) {
 					handleDescribe(base_command, parameters);
@@ -159,8 +150,14 @@ public class Player {
 				else if(type.equals("modify")) {
 					
 				}
+				else if(type.equals("use")) {
+					handleUse(parameters);
+				}
 				else if(type.equals("player")) {
 					
+				}
+				else if(type.equals("inventory")) {
+					handleInventory();
 				}
 				else if(type.equals("map")) {
 					System.out.println( map.getDescription() );
@@ -176,8 +173,71 @@ public class Player {
 		
 	}
 	
-	public void handleMove(String base_command, String[] parameters) {
-		
+	public void addItem( String item_name) {
+		this.items.put(item_name.toLowerCase(), new Item(item_name) );
+	}
+
+
+	public void handleUse(String[] parameters) {
+		try {
+			
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			System.out.println(parameters[0] + " what?");
+		}	
+	}
+	
+	public void handleDrop(String[] parameters) {
+		try {
+			
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			System.out.println(parameters[0] + " what?");
+		}	
+	}
+	
+	public void handleInventory() {
+		this.printInventory();
+	}
+	
+	public void handleObtain(String[] parameters) {
+		try {
+			String item_name = parameters[1];
+			if( canTake( item_name) ) {
+				this.addItem(item_name);
+				this.map.removeItem(item_name);
+				System.out.println("You took: " + item_name);
+			}
+			else {
+				System.out.println("Sorry you can't take that");
+			}
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			System.out.println(parameters[0] + " what?");
+		}	
+	}
+	
+	public void handleMove(String[] parameters) {
+		try {
+			if( parameters[1].equalsIgnoreCase("up") || parameters[1].equalsIgnoreCase("straight") || parameters[1].equalsIgnoreCase("north") ) {
+				this.goUp();
+			}
+			else if( parameters[1].equalsIgnoreCase("down") || parameters[1].equalsIgnoreCase("south") ) {
+				this.goDown();
+			}
+			else if( parameters[1].equalsIgnoreCase("left") || parameters[1].equalsIgnoreCase("west")) {
+				this.goLeft();
+			}
+			else if( parameters[1].equalsIgnoreCase("right") || parameters[1].equalsIgnoreCase("east")) {
+				this.goRight();
+			}
+			else {
+				System.out.println("Direction unrecognized");
+			}
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			System.out.println(parameters[0] + " where?");
+		}
 	}
 	
 	public void handleDescribe(String base_command, String[] parameters) {
@@ -201,9 +261,41 @@ public class Player {
 		}			
 	}
 	
-	public void getInventory() {
-		for(Item item : this.items) {
-			System.out.println( item.getTitle() );
+	public void printInventory() {
+
+	    Iterator it = this.items.entrySet().iterator();
+	    
+		for( java.util.Map.Entry<String, Item> entry : this.items.entrySet() ) {
+			System.out.println(entry.getValue().getName());
+    	}
+		
+
+	    
+	}
+	
+	public boolean canAttack() {
+		return false;
+	}
+	
+	public boolean canTake( String item_name) {
+		try {
+			return ( this.map.items.get( item_name.toLowerCase() ).can_take );
+		}
+		catch(NullPointerException e) {
+			//e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	public boolean canMove(Integer x, Integer y) {
+		try {
+			Path path = this.map.paths.get(x + ":" + y);
+			
+			return ( x == path.getX() && y == path.getY() );
+		}
+		catch(NullPointerException e) {
+			return false;
 		}
 	}
 	
@@ -212,19 +304,48 @@ public class Player {
 	}
 	
 	public void goUp() {
-		this.setY( y + 1);
+		try {
+			if( this.canMove(x, y + 1) ) {
+				this.setY( y + 1);
+				map.printDescription();
+			}
+			else {
+				System.out.println("Sorry You can't go there");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void goDown() {
-		this.setY( y - 1);
+		if( this.canMove(x, y - 1) ) {
+			this.setY( y - 1);
+			map.printDescription();
+		}
+		else {
+			System.out.println("Sorry You can't go there");
+		}
 	}
 	
 	public void goRight() {
-		this.setY( x + 1);
+		if( this.canMove(x + 1, y) ) {
+			this.setX( x + 1);
+			map.printDescription();
+		}
+		else {
+			System.out.println("Sorry You can't go there");
+		}
 	}
 	
 	public void goLeft() {
-		this.setY( x - 1);
+		if( this.canMove(x - 1, y) ) {
+			this.setX( x - 1);
+			map.printDescription();
+		}
+		else {
+			System.out.println("Sorry You can't go there");
+		}
 	}
 	
 	public void movePlayer(int x, int y) {
@@ -254,6 +375,7 @@ public class Player {
 
 	public void setX(int x) {
 		this.x = x;
+		this.map = new Map(this.x, this.y);
 	}
 
 	public int getY() {
@@ -262,6 +384,7 @@ public class Player {
 
 	public void setY(int y) {
 		this.y = y;
+		this.map = new Map(this.x, this.y);
 	}
 
 	public int getHp() {

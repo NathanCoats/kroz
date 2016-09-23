@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -9,8 +10,8 @@ public class Map {
 	
 	public String id;
 	public String description;
-	public ArrayList<Item> items;
-	public ArrayList<Path> paths;
+	public HashMap<String, Item> items;
+	public HashMap<String, Path> paths;
 	public Integer x;
 	public Integer y;
 	
@@ -22,17 +23,17 @@ public class Map {
 			and.add( new BasicDBObject( "x", x ) );
 			and.add( new BasicDBObject( "y", y ) );
 			
+			this.paths = new HashMap<String, Path>();
+			this.items = new HashMap<String, Item>();
+			
 			DBCursor cursor = connection.getCollection("map").find( new BasicDBObject("$and", and) ).limit(1);
-
 			
 	        if(cursor.size() == 0) {
 	    		this.id = "";
 	    		this.x  = 1;
 	    		this.y  = 1;
-	    		this.description = "";
-	    		
-	    		// this is a temporary placeholder until we get a working system for items
-	    		this.items = new ArrayList<Item>();
+	    		this.description = "No Map Loaded";
+
 	        }
 	        else {
 	        	DBObject next = cursor.next();
@@ -41,12 +42,12 @@ public class Map {
 	        	this.y = Integer.parseInt( next.get("y").toString() );
 	        	this.description = next.get("description").toString();
 	        	
-	        	// this is a temporary placeholder until we get a working system for items
-	        	this.items = (ArrayList<Item>)next.get("items");
-	        	
-	        	// this is a temporary placeholder until we get a working system for paths
-	        	this.paths = (ArrayList<Path>)next.get("paths");
-	        	
+	        	// this is ugly but it will work for now
+	        	this.items = Item.convertItems( (ArrayList<String>)next.get("items") );
+
+	        	// this is ugly but it will work for now
+	        	this.paths = Path.convertPaths( (ArrayList<DBObject>)next.get("paths") );
+
 	        }
 		}
 		catch(Exception e) {
@@ -54,33 +55,47 @@ public class Map {
 		}
 	}
 	
+	public void removeItem(String key) {
+		try {
+			this.items.remove(key);
+			this.save();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void save() {
 	    Connection connection = new Connection();
 
 	    if( this.id.equals("") ) {
-		    BasicDBObject obj = new BasicDBObject("desciption",this.description)
+		    BasicDBObject obj = new BasicDBObject("description", this.description)
 				    .append("x", this.x)
 				    .append("y", this.y)
-				    .append("paths", this.paths)
+				    .append("paths", Path.unConvertPaths( this.paths ) )
 				    
 				    // this is a temporary placeholder until we get a working system for items
-			    	.append("items", this.items);
+			    	.append("items", Item.unConvertItems(this.items));
 		    
 	    	connection.getCollection( "player" ).insert( obj );
 	    }
 	    else {
-		    BasicDBObject obj = new BasicDBObject("desciption",this.description)
+		    BasicDBObject obj = new BasicDBObject("description",this.description)
 			    .append("x", this.x)
 			    .append("y", this.y)
 			    // this is a temporary placeholder until we get a working system for paths
-			    .append("paths", this.paths)
+			    .append("paths", Path.unConvertPaths( this.paths ) )
 			    // this is a temporary placeholder until we get a working system for items
-		    	.append("items", this.items);
+		    	.append("items", Item.unConvertItems(this.items));
 		    
 	    	BasicDBObject search = new BasicDBObject("x", this.x).append("y", this.y);
 	    	connection.getCollection( "map" ).update(search, obj, true, false);
 	    }
 	    
+	}
+	
+	public void printDescription() {
+		System.out.println( this.getDescription() );
 	}
 	
 	public String getDescription() {
@@ -99,19 +114,19 @@ public class Map {
 		this.id = id;
 	}
 
-	public ArrayList<Item> getItems() {
+	public HashMap<String, Item> getItems() {
 		return items;
 	}
 
-	public void setItems(ArrayList<Item> items) {
+	public void setItems(HashMap<String, Item> items) {
 		this.items = items;
 	}
 
-	public ArrayList<Path> getPaths() {
+	public HashMap<String, Path> getPaths() {
 		return paths;
 	}
 
-	public void setPaths(ArrayList<Path> paths) {
+	public void setPaths(HashMap<String, Path> paths) {
 		this.paths = paths;
 	}
 

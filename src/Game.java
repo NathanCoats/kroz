@@ -17,7 +17,7 @@ public class Game {
 		Player player = new Player(name);
 
 		System.out.println( "Profile was loaded" );
-		
+		player.map.printDescription();
 		boolean quit = false;
 		
 		while( !quit ) {
@@ -36,8 +36,9 @@ public class Game {
 			else if( command.equals("commands") ) {
 				printCommands();
 			}
-			
-			player.handleCommand( command );			
+			else {
+				player.handleCommand( command );		
+			}	
 		}
 		
 		in.close();
